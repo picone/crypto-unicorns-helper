@@ -1,0 +1,36 @@
+name: CU Helper Pack Extension CI
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+jobs:
+  build-chrome-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+      - name: Install dependency
+        run: yarn install --immutable
+      - name: Build and pack
+        run: ./node_modules/.bin/webpack --config webpack.js
+      - name: Pack to zip file
+        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
+        with:
+          extensionDir: dist
+          zipFilePath: build/extension.zip
+      - name: Pack to crx file
+        uses: cardinalby/webext-buildtools-chrome-crx-action@2.0.1
+        with:
+          zipFilePath: build/extension.zip
+          crxFilePath: build/extension.crx
+          privateKey: ${{ secrets.EXTENSION_PK }}
+      - name: Upload extension
+        uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: build/extension.crx
