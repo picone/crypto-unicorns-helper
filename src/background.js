@@ -3,6 +3,7 @@ import { RspGroupListenerRegister, MsgGroupUpdate } from './gen-nodejs/cu_types'
 const Buffer = require('buffer/').Buffer
 import { decode as DecodeMsgPack } from '@msgpack/msgpack'
 import { Building, BuildingEvent, BuildingSlot, DataStore, Land } from './models/store'
+//import { Get as StorageGet, Set as StorageSet } from './local_storage'
 
 let dataStore = new DataStore()
 
@@ -81,16 +82,34 @@ function updateLand(landId, msg) {
             building.events = item?.events?.map(evt => {
                 return new BuildingEvent(evt.timestamp)
             })
-            for (const slotId in item?.data?.slots) {
-                const slotItem = item?.data?.slots[slotId]
-                if (slotItem?.is_lock) {
-                    continue
-                }
+            if (item?.type === 'nursery' && (item?.state === 'breeding_in_progress'
+                || item?.state === 'breeding_finished')) {
+                const breeding = item?.data?.breeding
                 const slot = new BuildingSlot()
-                slot.completedAt = slotItem?.data?.complete_at
-                slot.startAt = slotItem?.data?.start_at
-                slot.state = slotItem?.data?.state
-                building.slots[slotId] = slot
+                slot.completedAt = breeding?.end_time
+                slot.startAt = breeding?.start_time
+                slot.state = item.state === 'breeding_in_progress' ? 'in_progress' : 'collectable'
+                building.slots[0] = slot
+            } else if (item?.type === 'nursery' && (item?.state === 'evolution_in_progress'
+            || item?.state === 'evolution_finished')) {
+                const evolution = item?.data?.evolution
+                const slot = new BuildingSlot()
+                slot.completedAt = evolution?.end_time
+                slot.startAt = evolution?.start_time
+                slot.state = item.state === 'evolution_in_progress' ? 'in_progress' : 'collectable'
+                building.slots[0] = slot
+            } else {
+                for (const slotId in item?.data?.slots) {
+                    const slotItem = item?.data?.slots[slotId]
+                    if (slotItem?.is_lock) {
+                        continue
+                    }
+                    const slot = new BuildingSlot()
+                    slot.completedAt = slotItem?.data?.complete_at
+                    slot.startAt = slotItem?.data?.start_at
+                    slot.state = slotItem?.data?.state
+                    building.slots[slotId] = slot
+                }
             }
             land.buildings[buildingId] = building
         }
@@ -109,6 +128,16 @@ function initBackground() {
     chrome.runtime.onMessage.addListener(msg => {
         if (msg?.type == 'recv') {
             dispatchMessage(decodeMessage(msg))
+
+            chrome.storage.local.set({
+                dataStore: dataStore,
+            })
+        }
+    })
+    // restore data
+    chrome.storage.local.get(['dataStore'], result => {
+        if (result?.dataStore) {
+            dataStore = result.dataStore
         }
     })
 }

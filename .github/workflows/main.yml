@@ -1,8 +1,6 @@
 name: CU Helper Pack Extension CI
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
 jobs:
@@ -33,4 +31,14 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: output
-          path: build/extension.crx
+          path: |
+            build/extension.crx
+            build/extension.zip
+      - name: Upload to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file_glob: true
+          file: build/*
+          tag: ${{ github.ref_name }}
+          overwrite: true

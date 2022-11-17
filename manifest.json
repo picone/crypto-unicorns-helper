@@ -11,6 +11,7 @@
         "128": "imgs/icon.png"
     },
     "permissions": [
+        "storage",
         "webRequest"
     ],
     "host_permissions": [
