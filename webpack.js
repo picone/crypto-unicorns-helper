@@ -12,16 +12,16 @@ const resolve = p => path.resolve(__dirname, p)
 
 module.exports = {
     mode: 'production',
-    // watch: false,
+    // watch: true,
     // watchOptions: {
     //     ignored: ["node_modules/**"],
 	// },
     // devtool: 'cheap-module-source-map',
     entry: {
         content: resolve('src/content.js'),
-        inject_ws: resolve('src/inject_ws.js'),
+        inject: resolve('src/inject.js'),
         background: resolve('src/background.js'),
-        popup: resolve('src/popup.js'),
+        popup: resolve('src/popup/popup.js')
     },
     output: {
         filename: '[name].js',
@@ -71,7 +71,7 @@ module.exports = {
 			}),
 			new OptimizeCssPlugin(),
         ],
-        usedExports: true,
+        usedExports: true
     },
     plugins: [
         new ESLintPlugin({
@@ -90,7 +90,7 @@ module.exports = {
 		new HtmlPlugin({
 			title: 'Event List',
 			filename: 'events.html',
-			template: resolve('src/events.html'),
+			template: resolve('src/popup/events.html'),
 			chunks: ['vendors', 'option'],
 		}),
         new CopyPlugin({

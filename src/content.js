@@ -1,7 +1,7 @@
 // inspect window.WebSocket to get the traffic.
 function injectWs() {
     const script = document.createElement('script')
-    script.src = chrome.runtime.getURL('inject_ws.js')
+    script.src = chrome.runtime.getURL('inject.js')
     script.onload = () => {
         script.remove()
     }

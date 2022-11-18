@@ -11,7 +11,7 @@ More features are developing.
 ## How it works
 
 1. Inject in to the game by [content.js](src/content.js)
-2. Load [inject_ws.js](src/inject_ws.js) and hijack the
+2. Load [inject.js](src/inject.js) and hijack the
 [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket),
 filter the traffic that related to building information.
 3. Send the raw data to the background service.

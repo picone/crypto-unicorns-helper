@@ -64,6 +64,8 @@ function updateLand(landId, msg) {
     }
     if (msg?.land?.type) {
         land.class = msg.land.type
+    } else if (msg?.land?.class) {
+        land.class = msg.land.class
     }
     if (msg?.land?.level) {
         land.level = msg.land.level
@@ -116,6 +118,36 @@ function updateLand(landId, msg) {
     }
 }
 
+function updateAlertTime() {
+    if (!dataStore) {
+        return
+    }
+    let notifyTime = Number.MAX_SAFE_INTEGER
+    const nowTs = (new Date()).valueOf()
+    for (const landId in dataStore.lands) {
+        const land = dataStore.lands[landId]
+        for (const buildingId in land.buildings) {
+            const building = land.buildings[buildingId]
+            building.events.forEach(event => {
+                if (event.timestamp > nowTs) {
+                    notifyTime = Math.min(event.timestamp, notifyTime)
+                }
+            })
+        }
+    }
+    console.log(notifyTime)
+    if (notifyTime < Number.MAX_SAFE_INTEGER) {
+        chrome.notifications.create('CU_NOTIFICATION', {
+            type: 'basic',
+            title: 'Your unicorns are waiting for you',
+            message: 'It\'s time to collect your rewards!',
+            iconUrl: 'imgs/icon.png',
+            eventTime: notifyTime,
+            silent: true,
+        })
+    }
+}
+
 function initBackground() {
     chrome.runtime.onConnect.addListener(port => {
         if (port.sender.url.endsWith('/events.html')) {
@@ -130,14 +162,19 @@ function initBackground() {
             dispatchMessage(decodeMessage(msg))
 
             chrome.storage.local.set({
-                dataStore: dataStore,
+                dataStore: JSON.stringify(dataStore),
             })
+            updateAlertTime()
         }
     })
     // restore data
     chrome.storage.local.get(['dataStore'], result => {
         if (result?.dataStore) {
-            dataStore = result.dataStore
+            try {
+                dataStore = JSON.parse(result.dataStore)
+            } catch (e) {
+                console.log(e)
+            }
         }
     })
 }

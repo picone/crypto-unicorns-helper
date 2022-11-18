@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Crypto Unicorns Helper",
     "description": "A helper of the game Crypto Unicorns.",
-    "version": "1.0",
+    "version": "1.0.2",
     "action": {
         "default_popup": "events.html",
         "default_icon": "imgs/icon.png"
@@ -11,6 +11,7 @@
         "128": "imgs/icon.png"
     },
     "permissions": [
+        "notifications",
         "storage",
         "webRequest"
     ],
@@ -32,7 +33,7 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "inject_ws.js"
+                "inject.js"
             ],
             "matches": [
                 "https://game.cryptounicorns.fun/*"

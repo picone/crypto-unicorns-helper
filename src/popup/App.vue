@@ -5,10 +5,10 @@
         fit="true"
         max-height="500"
     >
-        <el-table-column prop="landId" label="Land ID"/>
-        <el-table-column prop="landClass" label="Class"/>
+        <el-table-column prop="landId" label="Land ID" width="100"/>
+        <el-table-column prop="landClass" label="Class" width="100"/>
         <el-table-column prop="type" label="Type" width="100"/>
-        <el-table-column prop="completedAt" label="ETA" :formatter="timestampFormatter" width="190"/>
+        <el-table-column prop="completedAt" label="ETA" :formatter="timestampFormatter" width="210"/>
         <el-table-column label="%" width="60">
             <template #default="scope">
                 <el-progress :text-inside="true" :stroke-width="16" :percentage="percentage(scope.row)" :status="percentageColor(scope.row)"/>
