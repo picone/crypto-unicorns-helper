@@ -12,12 +12,10 @@
     },
     "permissions": [
         "notifications",
-        "storage",
-        "webRequest"
+        "storage"
     ],
     "host_permissions": [
-        "https://game.cryptounicorns.fun/*",
-        "wss://msde1.game.cryptounicorns.systems/fe/game"
+        "https://game.cryptounicorns.fun/*"
     ],
     "content_scripts": [
         {

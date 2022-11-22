@@ -162,19 +162,15 @@ function initBackground() {
             dispatchMessage(decodeMessage(msg))
 
             chrome.storage.local.set({
-                dataStore: JSON.stringify(dataStore),
+                data_store: dataStore,
             })
             updateAlertTime()
         }
     })
     // restore data
-    chrome.storage.local.get(['dataStore'], result => {
+    chrome.storage.local.get(['data_store'], result => {
         if (result?.dataStore) {
-            try {
-                dataStore = JSON.parse(result.dataStore)
-            } catch (e) {
-                console.log(e)
-            }
+            dataStore = result.dataStore
         }
     })
 }
