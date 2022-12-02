@@ -12,14 +12,14 @@ const resolve = p => path.resolve(__dirname, p)
 
 module.exports = {
     mode: 'production',
-    // watch: true,
-    // watchOptions: {
-    //     ignored: ["node_modules/**"],
-	// },
-    // devtool: 'cheap-module-source-map',
+    watch: true,
+    watchOptions: {
+        ignored: ["node_modules/**"],
+	},
+    devtool: 'cheap-module-source-map',
     entry: {
-        content: resolve('src/content.js'),
-        inject: resolve('src/inject.js'),
+        content: resolve('src/content/content.js'),
+        inject: resolve('src/content/inject.js'),
         background: resolve('src/background.js'),
         popup: resolve('src/popup/popup.js')
     },
@@ -47,7 +47,10 @@ module.exports = {
             },
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                loader: 'ts-loader',
+                options: {
+                    appendTsSuffixTo: [/\.vue$/]
+                },
                 exclude: /node_modules/,
             },
             {
@@ -61,7 +64,7 @@ module.exports = {
         ]
     },
     optimization: {
-        minimize: true,
+        minimize: false,
         minimizer: [
             new TerserPlugin({
                 extractComments: false,

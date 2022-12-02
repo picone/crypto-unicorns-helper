@@ -2,7 +2,7 @@ import { TCompactProtocol, TFramedTransport } from 'thrift'
 import { RspGroupListenerRegister, MsgGroupUpdate } from './gen-nodejs/cu_types'
 const Buffer = require('buffer/').Buffer
 import { decode as DecodeMsgPack } from '@msgpack/msgpack'
-import { Building, BuildingEvent, BuildingSlot, DataStore, Land } from './models/store'
+import { Building, BuildingEvent, BuildingSlot, DataStore, Land } from './models/game'
 //import { Get as StorageGet, Set as StorageSet } from './local_storage'
 
 let dataStore = new DataStore()

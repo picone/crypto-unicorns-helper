@@ -31,7 +31,8 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "inject.js"
+                "inject.js",
+                "inject.css"
             ],
             "matches": [
                 "https://game.cryptounicorns.fun/*"

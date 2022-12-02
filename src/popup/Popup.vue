@@ -21,7 +21,7 @@
 import moment from 'moment'
 
 export default {
-    name: 'app',
+    name: 'Popup',
     data() {
         return {
             dataStore: null,

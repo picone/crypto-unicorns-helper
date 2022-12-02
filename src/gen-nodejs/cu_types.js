@@ -12,10 +12,159 @@ var Int64 = require('node-int64');
 
 
 var ttypes = module.exports = {};
+ttypes.Error = {
+  'NONE' : 0
+};
+var ReqPlayerRequest = module.exports.ReqPlayerRequest = function(args) {
+  this.type = null;
+  this.data = null;
+  if (args) {
+    if (args.type !== undefined && args.type !== null) {
+      this.type = args.type;
+    }
+    if (args.data !== undefined && args.data !== null) {
+      this.data = args.data;
+    }
+  }
+};
+ReqPlayerRequest.prototype = {};
+ReqPlayerRequest.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.type = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.data = input.readBinary();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+ReqPlayerRequest.prototype.write = function(output) {
+  output.writeStructBegin('ReqPlayerRequest');
+  if (this.type !== null && this.type !== undefined) {
+    output.writeFieldBegin('type', Thrift.Type.STRING, 1);
+    output.writeString(this.type);
+    output.writeFieldEnd();
+  }
+  if (this.data !== null && this.data !== undefined) {
+    output.writeFieldBegin('data', Thrift.Type.STRING, 2);
+    output.writeBinary(this.data);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var RspPlayerRequest = module.exports.RspPlayerRequest = function(args) {
+  this.result = null;
+  this.type = null;
+  this.data = null;
+  if (args) {
+    if (args.result !== undefined && args.result !== null) {
+      this.result = args.result;
+    }
+    if (args.type !== undefined && args.type !== null) {
+      this.type = args.type;
+    }
+    if (args.data !== undefined && args.data !== null) {
+      this.data = args.data;
+    }
+  }
+};
+RspPlayerRequest.prototype = {};
+RspPlayerRequest.prototype.read = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.result = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.type = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.data = input.readBinary();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+RspPlayerRequest.prototype.write = function(output) {
+  output.writeStructBegin('RspPlayerRequest');
+  if (this.result !== null && this.result !== undefined) {
+    output.writeFieldBegin('result', Thrift.Type.I32, 1);
+    output.writeI32(this.result);
+    output.writeFieldEnd();
+  }
+  if (this.type !== null && this.type !== undefined) {
+    output.writeFieldBegin('type', Thrift.Type.STRING, 2);
+    output.writeString(this.type);
+    output.writeFieldEnd();
+  }
+  if (this.data !== null && this.data !== undefined) {
+    output.writeFieldBegin('data', Thrift.Type.STRING, 3);
+    output.writeBinary(this.data);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var RspGroupListenerRegister = module.exports.RspGroupListenerRegister = function(args) {
+  this.result = null;
   this.name = null;
   this.group = null;
   if (args) {
+    if (args.result !== undefined && args.result !== null) {
+      this.result = args.result;
+    }
     if (args.name !== undefined && args.name !== null) {
       this.name = args.name;
     }
@@ -35,6 +184,13 @@ RspGroupListenerRegister.prototype.read = function(input) {
       break;
     }
     switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.result = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
         this.name = input.readString();
@@ -61,6 +217,11 @@ RspGroupListenerRegister.prototype.read = function(input) {
 
 RspGroupListenerRegister.prototype.write = function(output) {
   output.writeStructBegin('RspGroupListenerRegister');
+  if (this.result !== null && this.result !== undefined) {
+    output.writeFieldBegin('result', Thrift.Type.I32, 1);
+    output.writeI32(this.result);
+    output.writeFieldEnd();
+  }
   if (this.name !== null && this.name !== undefined) {
     output.writeFieldBegin('name', Thrift.Type.STRING, 2);
     output.writeString(this.name);
@@ -143,16 +304,12 @@ MsgGroupUpdate.prototype.write = function(output) {
 var PayloadGroup = module.exports.PayloadGroup = function(args) {
   this.base = null;
   this.props = null;
-  this.profile = null;
   if (args) {
     if (args.base !== undefined && args.base !== null) {
       this.base = new ttypes.InfoGroup(args.base);
     }
     if (args.props !== undefined && args.props !== null) {
       this.props = args.props;
-    }
-    if (args.profile !== undefined && args.profile !== null) {
-      this.profile = args.profile;
     }
   }
 };
@@ -182,13 +339,6 @@ PayloadGroup.prototype.read = function(input) {
         input.skip(ftype);
       }
       break;
-      case 3:
-      if (ftype == Thrift.Type.STRING) {
-        this.profile = input.readBinary();
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -208,11 +358,6 @@ PayloadGroup.prototype.write = function(output) {
   if (this.props !== null && this.props !== undefined) {
     output.writeFieldBegin('props', Thrift.Type.STRING, 2);
     output.writeBinary(this.props);
-    output.writeFieldEnd();
-  }
-  if (this.profile !== null && this.profile !== undefined) {
-    output.writeFieldBegin('profile', Thrift.Type.STRING, 3);
-    output.writeBinary(this.profile);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
