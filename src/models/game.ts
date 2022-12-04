@@ -106,14 +106,26 @@ export class MarketPlace {
     }
 }
 
+export class Player {
+    inventory = new Map<string, number>()
+
+    toJSON() {
+        return {
+            inventory: Array.from(this.inventory.entries()),
+        }
+    }
+}
+
 export class DataStore {
     lands = new Map<number, Land>()
     marketPlace = new MarketPlace()
+    player = new Player()
 
     toJSON() {
         return {
             lands: Array.from(this.lands.entries()),
             marketPlace: this.marketPlace,
+            player: this.player,
         }
     }
 }

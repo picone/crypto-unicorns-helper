@@ -2,9 +2,9 @@ import { TCompactProtocol, TFramedTransport } from 'thrift'
 const Buffer = require('buffer/').Buffer
 import { decode as DecodeMsgPack } from '@msgpack/msgpack'
 import { Building, BuildingEvent, BuildingSlot, DataStore, Land, Quest, Reward, UnicornClass } from '../../models/game'
-import type { LandClass, BuildingType, BuildingState, QuestType, MarketPlace } from '../../models/game'
+import type { LandClass, BuildingType, BuildingState, QuestType } from '../../models/game'
 import { CraftingRecipeList, RecipeItemInfo, UnicornBerries } from '../../models/definition'
-import { RspGroupListenerRegister, MsgGroupUpdate } from '../../codegen/'
+import { RspGroupListenerRegister, MsgGroupUpdate, RspPlayerLogin, CommandType } from '../../codegen/'
 import { Dispatch, Commit } from 'vuex'
 import * as moment from 'moment'
 import type { PriceState } from './price'
@@ -66,10 +66,8 @@ export class CraftingItem {
         const market = state.dataStore.marketPlace
         this.materialCost.forEach(item => {
             this.requirementRbw += market.onePcsPrice(item.name) * item.amount
-            console.log(`item ${name} add ${item.name} ${market.onePcsPrice(item.name)} * ${item.amount}`)
         })
         this.requirementRbw += unimCost * price.unim / price.rbw
-        console.log(`item ${name} add ${unimCost} * ${price.unim / price.rbw}`)
         const berry = UnicornBerries.get(state.selectedUnicornClass)
         if (berry) {
             this.requirementRbw += this.energyCost * 25 * state.dataStore.marketPlace.onePcsPrice(berry)
@@ -248,6 +246,13 @@ export default {
         },
         setUnicornClass(state: GameState, unicornClass: UnicornClass) {
             state.selectedUnicornClass = unicornClass
+        },
+        updateInventory(state: GameState, data: object) {
+            Object.entries(data).forEach(([key, val]) => {
+                if (key.startsWith('items/') && key.endsWith('/quantity')) {
+                    state.dataStore.player.inventory.set(key.substring(6, key.length - 9), val)
+                }
+            })
         }
     },
     actions: {
@@ -267,14 +272,29 @@ export default {
             const buf = data.slice(dataOffset, data.byteLength)
             const protocol = new TCompactProtocol(new TFramedTransport(new Buffer(buf)))
             switch (command) {
-                case 314:
+                case CommandType.RSP_PLAYER_LOGIN:
+                    ctx.dispatch('parseRspPlayerLogin', RspPlayerLogin.read(protocol))
+                    break
+                case CommandType.RSP_GROUP_LISTENER_REGISTER:
                     ctx.dispatch('parseRspGroupListenerRegister', RspGroupListenerRegister.read(protocol))
                     break
-                case 350:
+                case CommandType.MSG_GROUP_UPDATE:
                     ctx.dispatch('parseMsgGroupUpdate', MsgGroupUpdate.read(protocol))
                     break
                 default:
                     return
+            }
+        },
+        parseRspPlayerLogin(ctx: { commit: Commit }, msg: RspPlayerLogin) {
+            if (!msg?.player?.props) {
+                return
+            }
+            const data: any = DecodeMsgPack(msg.player.props)
+            if (!data) {
+                return
+            }
+            if (data?.inventory) {
+                ctx.commit('updateInventory', data.inventory)
             }
         },
         parseRspGroupListenerRegister(ctx: { commit: Commit }, msg: RspGroupListenerRegister) {
