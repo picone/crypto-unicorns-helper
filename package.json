@@ -22,6 +22,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.2",
     "@creditkarma/thrift-typescript": "^3.7.6",
+    "@types/chrome": "^0.0.203",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "babel-loader": "^9.1.0",

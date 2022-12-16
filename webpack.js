@@ -20,8 +20,8 @@ module.exports = {
     entry: {
         content: resolve('src/content/content.js'),
         inject: resolve('src/content/inject.js'),
-        background: resolve('src/background.js'),
-        popup: resolve('src/popup/popup.js')
+        background: resolve('src/background/background.ts'),
+        popup: resolve('src/popup/popup.ts')
     },
     output: {
         filename: '[name].js',

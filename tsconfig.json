@@ -14,7 +14,10 @@
         "@/*": [
           "./src/*"
         ]
-      }
+      },
+      "types": [
+        "chrome"
+      ]
     },
     "include": [
       "src/**/*.ts",

@@ -147,6 +147,12 @@ export default {
         },
     },
     mutations: {
+        updateDataStore(state: GameState, dataSotre?: DataStore) {
+            if (!dataSotre) {
+                return
+            }
+            Object.assign(state.dataStore, dataSotre)
+        },
         updateLandFromMsgPack(state: GameState, data: {landId: number; payload?: Buffer}) {
             if (!data.payload) {
                 return
@@ -249,11 +255,11 @@ export default {
         },
         updateInventory(state: GameState, data: object) {
             Object.entries(data).forEach(([key, val]) => {
-                if (key.startsWith('items/') && key.endsWith('/quantity')) {
+                if (key.startsWith('items/') && key.endsWith('/quantity') && val > 0) {
                     state.dataStore.player.inventory.set(key.substring(6, key.length - 9), val)
                 }
             })
-        }
+        },
     },
     actions: {
         parseFromWsData(ctx: { dispatch: Dispatch }, data: ArrayBuffer) {

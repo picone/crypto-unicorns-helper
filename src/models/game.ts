@@ -24,7 +24,8 @@ export class Land {
             name: this.name,
             level: this.level,
             xp: this.xp,
-            buildings: Array.from(this.buildings.entries()),
+            buildings: Object.fromEntries(this.buildings),
+            quests: this.quests,
         }
     }
 }
@@ -41,7 +42,7 @@ export class Building {
         return {
             id: this.id,
             events: this.events,
-            slots: Array.from(this.slots.entries()),
+            slots: Object.fromEntries(this.slots),
             type: this.type,
             level: this.level,
             state: this.state,
@@ -91,8 +92,15 @@ export class MarketPlace {
 
     toJSON() {
         return {
-            data: Array.from(this.data.entries()),
+            data: Object.fromEntries(this.data),
         }
+    }
+
+    static fromJSON(json: any) {
+        const obj = Object.create(MarketPlace.prototype)
+        return Object.assign(obj, json, {
+            data: new Map(Object.entries(json?.data))
+        })
     }
 
     onePcsPrice(name: string): number {
@@ -111,8 +119,15 @@ export class Player {
 
     toJSON() {
         return {
-            inventory: Array.from(this.inventory.entries()),
+            inventory: Object.fromEntries(this.inventory),
         }
+    }
+
+    static fromJSON(json: any) {
+        const obj = Object.create(Player.prototype)
+        return Object.assign(obj, json, {
+            inventory: new Map(Object.entries(json?.inventory))
+        })
     }
 }
 
@@ -123,9 +138,16 @@ export class DataStore {
 
     toJSON() {
         return {
-            lands: Array.from(this.lands.entries()),
+            lands: Object.fromEntries(this.lands),
             marketPlace: this.marketPlace,
             player: this.player,
         }
+    }
+
+    static fromJSON(json: any) {
+        const obj = Object.create(DataStore.prototype)
+        return Object.assign(obj, json, {
+            lands: new Map(Object.entries(json?.lands))
+        })
     }
 }
