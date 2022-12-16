@@ -47,7 +47,8 @@ function inject_ws() {
 }
 
 function onOpen() {
-    const allElem = document.getElementById('root')?.firstChild 
+    const allElem = document.getElementById('nav')?.firstChild  
+    console.log("asdasd")
     if (!allElem || hasInit) {
         return
     }

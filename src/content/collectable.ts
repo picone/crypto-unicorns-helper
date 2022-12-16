@@ -16,8 +16,7 @@ export function initCollectable(elem: Element) {
     collectBtn.onclick = () => {
         store.commit('showCollectable')
     }
-    collectBtn.setAttribute('class', 'btn btn-outline-light')
-    collectBtn.setAttribute('style', 'position:absolute;bottom:20px;right:170px;')
+    collectBtn.setAttribute('class', 'nav-link ms-2 my-2 btn btn-secondary')
     collectBtn.innerHTML = 'Collectable'
     elem.appendChild(collectBtn)
 }
