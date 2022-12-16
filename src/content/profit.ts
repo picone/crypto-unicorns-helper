@@ -16,8 +16,7 @@ export function initProfit(elem: Element) {
     profitBtn.onclick = () => {
         store.commit('showProfit')
     }
-    profitBtn.setAttribute('class', 'btn btn-outline-light')
-    profitBtn.setAttribute('style', 'position:absolute;bottom:20px;right:300px;')
+    profitBtn.setAttribute('class', 'nav-link ms-2 my-2 btn btn-secondary')
     profitBtn.innerHTML = 'Calculator'
     elem.appendChild(profitBtn)
 }
